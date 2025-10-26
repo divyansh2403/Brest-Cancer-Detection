@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Breast Cancer Detection System</title>
+  <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
+  <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+<div id="root"></div>
+
+<script type="text/babel">
+const { useState, useRef, useEffect } = React;
+
+function BreastCancerBatch() {
+  const [file, setFile] = useState(null);
+  const [results, setResults] = useState([]);
+  const [isProcessing, setIsProcessing] = useState(false);
+  const chartRef = useRef(null);
+  const chartInstance = useRef(null);
+
+  const handleFileChange = (e) => setFile(e.target.files[0]);
+
+  const uploadCSV = async () => {
+    if (!file) return alert("Please select a CSV file!");
+    setIsProcessing(true);
+
+    try {
+      const formData = new FormData();
+      formData.append("file", file);
+
+      const res = await fetch("/predict_csv", { method: "POST", body: formData });
+      const data = await res.json();
+
+      if (data.error) {
+        alert(data.error);
+        return;
+      }
+
+      setResults(data.results);
+    } catch (err) {
+      console.error(err);
+      alert("Something went wrong!");
+    } finally {
+      setIsProcessing(false);
+    }
+  };
+
+// Draw chart whenever results change
+useEffect(() => {
+  if (results.length === 0) return;
+
+  if (chartRef.current) {
+    if (chartInstance.current) chartInstance.current.destroy();
+    const ctx = chartRef.current.getContext("2d");
+
+    chartInstance.current = new Chart(ctx, {
+      type: 'bar',
+      data: {
+        labels: results.map((_, i) => `Patient ${i+1}`),
+        datasets: [
+          {
+            label: 'Benign Probability (%)',
+            data: results.map(r => (r.probability_benign * 100).toFixed(2)),
+            backgroundColor: 'rgba(34,197,94,0.7)',
+            borderRadius: 4,
+          },
+          {
+            label: 'Malignant Probability (%)',
+            data: results.map(r => ((1 - r.probability_benign) * 100).toFixed(2)),
+            backgroundColor: 'rgba(239,68,68,0.7)',
+            borderRadius: 4,
+          }
+        ]
+      },
+      options: {
+        responsive: true,
+        plugins: { 
+          legend: { display: true },
+          tooltip: { mode: 'index', intersect: false }
+        },
+        scales: { 
+          y: { beginAtZero: true, max: 100 },
+          x: { 
+            stacked: false,
+            ticks: { padding: 10 },
+            grid: { offset: true },
+          }
+        },
+        // Adjust bar group spacing
+        datasets: {
+          bar: {
+            barPercentage: 0.6,      // width of each bar
+            categoryPercentage: 0.8, // spacing between groups
+          }
+        }
+      }
+    });
+  }
+}, [results]);
+
+
+
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-purple-50 via-white to-pink-50 p-6">
+      <div className="max-w-5xl mx-auto">
+        <h1 className="text-4xl font-bold text-center text-gray-800 mb-6">Breast Cancer Detection - Batch CSV</h1>
+
+        <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
+          <div className="text-sm text-blue-900">
+            <strong>Medical Disclaimer:</strong> For educational use only. Consult professionals for medical diagnosis.
+          </div>
+        </div>
+
+        <div className="bg-white p-6 rounded-xl shadow-lg mb-6">
+          <h2 className="text-xl font-semibold mb-4">Upload CSV</h2>
+          <input type="file" accept=".csv" onChange={handleFileChange} className="mb-4"/>
+          <button
+            onClick={uploadCSV}
+            className={`px-6 py-3 rounded font-semibold text-white ${isProcessing ? 'bg-gray-400' : 'bg-pink-600 hover:bg-pink-700'}`}
+            disabled={isProcessing}
+          >
+            {isProcessing ? 'Processing...' : 'Upload & Predict'}
+          </button>
+          <small className="block mt-2 text-gray-500">
+            CSV must have 28 columns in order: mean radius, mean texture, ..., worst fractal dimension
+          </small>
+        </div>
+
+        {results.length > 0 && (
+          <div className="grid md:grid-cols-2 gap-6 mb-6">
+            <div className="bg-white rounded-xl shadow-lg p-4 overflow-x-auto">
+              <h3 className="text-lg font-semibold mb-3">Prediction Table</h3>
+              <table className="min-w-full border-collapse">
+                <thead className="bg-gray-200">
+                  <tr>
+                    <th className="px-4 py-2 text-left">Patient</th>
+                    <th className="px-4 py-2 text-left">Prediction</th>
+                    <th className="px-4 py-2 text-left">Benign Probability</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {results.map((r, i) => (
+                    <tr key={i} className="border-b">
+                      <td className="px-4 py-2">Patient {i+1}</td>
+                      <td className="px-4 py-2 font-bold">{r.prediction}</td>
+                      <td className="px-4 py-2">{(r.probability_benign*100).toFixed(2)}%</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+
+            <div className="bg-white rounded-xl shadow-lg p-4">
+  <h3 className="text-lg font-semibold mb-3">Probability Chart</h3>
+  <canvas ref={chartRef} height="250"></canvas>
+
+  {/* Legend */}
+  <div className="flex mt-2 space-x-4 items-center">
+    <div className="flex items-center space-x-1">
+      <div className="w-4 h-4 bg-green-500"></div>
+      <span className="text-sm">Benign</span>
+    </div>
+    <div className="flex items-center space-x-1">
+      <div className="w-4 h-4 bg-red-500"></div>
+      <span className="text-sm">Malignant</span>
+    </div>
+  </div>
+</div>
+          </div>
+        )}
+
+        <div className="bg-white rounded-xl shadow-lg p-6">
+          <h3 className="text-lg font-semibold mb-3">About This Tool</h3>
+          <div className="grid md:grid-cols-2 gap-4 text-sm text-gray-600">
+            <div><strong>Model:</strong> Logistic Regression classifier trained on tumor features</div>
+            <div><strong>Dataset:</strong> Wisconsin Breast Cancer Dataset patterns</div>
+            <div><strong>Features:</strong> 28 tumor characteristics including size, shape, texture</div>
+            <div><strong>Purpose:</strong> Educational demonstration of ML in medical diagnostics</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+const root = ReactDOM.createRoot(document.getElementById('root'));
+root.render(<BreastCancerBatch />);
+</script>
+</body>
+</html>

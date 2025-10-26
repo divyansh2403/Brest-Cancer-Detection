@@ -1,5 +1,3 @@
-# Brest-Cancer-Detection
-
 # 🩺 Breast Cancer Detection using Machine Learning
 
 This project uses **Machine Learning** to predict whether a tumor is **benign** or **malignant** based on the Breast Cancer Wisconsin dataset.  
@@ -21,90 +19,107 @@ This project includes:
 ---
 
 ## 🧠 Technologies Used
-- **Python 3.10+**
-- **pandas**, **numpy**, **scikit-learn**
-- **matplotlib**, **seaborn**
-- **Flask** or **Streamlit** for deployment
-- **Jupyter Notebook / VS Code** for development
+- Python 3.10+  
+- pandas, numpy, scikit-learn  
+- matplotlib, seaborn  
+- Flask or Streamlit  
+- Jupyter Notebook / VS Code
 
 ---
 
 ## 🧩 Folder Structure
-
+```
 breast-cancer-wisconsin/
 │
 ├── data_pipeline/
-│ ├── load_data.py # Loads and cleans dataset
-│ ├── preprocess.py # Scales and prepares data
+│   ├── load_data.py          # Loads and cleans dataset
+│   ├── preprocess.py         # Scales and prepares data
 │
-├── models/ # Trained models (.pkl or .h5)
-├── api/ or app/ # Flask app or API
-├── requirements.txt # Dependencies
-├── README.md # Project documentation
-└── .gitignore # Ignored files (like venv/)
-
+├── models/                   # Trained models (.pkl or .h5)
+├── api/ or app/              # Flask app or API
+├── requirements.txt          # Dependencies
+├── README.md                 # Project documentation
+└── .gitignore                # Ignored files (like venv/)
+```
 
 ---
 
 ## ⚙️ Setup Instructions
 
 ### 1️⃣ Clone the Repository
-```bash
+```
 git clone https://github.com/<your-username>/breast-cancer-detection.git
 cd breast-cancer-detection
+```
 
-2️⃣ Create a Virtual Environment
+### 2️⃣ Create a Virtual Environment
+```
 python -m venv venv
+```
 
-3️⃣ Activate the Environment
+### 3️⃣ Activate the Environment
+```
 # Windows
 venv\Scripts\activate
 
 # Mac/Linux
 source venv/bin/activate
+```
 
-4️⃣ Install Dependencies
+### 4️⃣ Install Dependencies
+```
 pip install -r requirements.txt
+```
 
-5️⃣ Run the Project
-
-If it’s a Flask app:
-
+### 5️⃣ Run the Project
+If Flask app:
+```
 python app.py
+```
 
-
-If it’s a Streamlit app:
-
+If Streamlit app:
+```
 streamlit run app.py
+```
 
-📈 Model Performance
-Metric	Score
-Accuracy	97%
-Precision	96%
-Recall	95%
+---
 
-(These are sample metrics — update with your actual results)
+## 📈 Model Performance
+| Metric | Score |
+|--------|--------|
+| Accuracy | 97% |
+| Precision | 96% |
+| Recall | 95% |
 
-🧬 Dataset
+*(Replace these with your actual results.)*
 
-Source: UCI Machine Learning Repository - Breast Cancer Wisconsin (Diagnostic)
+---
 
-The dataset includes features computed from digitized images of fine needle aspirates (FNA) of breast masses.
+## 🧬 Dataset
+**Source:** [UCI Machine Learning Repository - Breast Cancer Wisconsin (Diagnostic)](https://archive.ics.uci.edu/ml/datasets/Breast+Cancer+Wisconsin+(Diagnostic))  
+Features are computed from digitized images of fine needle aspirates (FNA) of breast masses.
 
-🚀 Future Improvements
+---
 
-Add Deep Learning (TensorFlow / PyTorch) models
+## 🚀 Future Improvements
+- Add Deep Learning (TensorFlow / PyTorch) models  
+- Deploy to Render / Hugging Face / Streamlit Cloud  
+- Add real-time prediction API  
 
-Deploy to cloud (Render / Hugging Face / Streamlit Cloud)
+---
 
-Integrate with a real-time prediction API
-
-🤝 Contributing
-
-Contributions, issues, and feature requests are welcome!
+## 🤝 Contributing
+Contributions, issues, and feature requests are welcome!  
 Feel free to fork this repo and submit a pull request.
 
-🧑‍💻 Author
+---
 
-Divyansh Aggarwal
-📍 SRM Institute of Science and Technology
+## 🧑‍💻 Author
+**Divyansh Aggarwal**  
+📍 SRM Institute of Science and Technology  
+🌐 GitHub: [@<your-username>](https://github.com/<your-username>)
+
+---
+
+## 📜 License
+This project is licensed under the **MIT License** — see the LICENSE file for details.

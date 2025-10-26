@@ -117,9 +117,8 @@ Feel free to fork this repo and submit a pull request.
 ## 🧑‍💻 Author
 **Divyansh Aggarwal**  
 📍 SRM Institute of Science and Technology  
-🌐 GitHub: [@<your-username>](https://github.com/<your-username>)
 
 ---
 
 ## 📜 License
-This project is licensed under the **MIT License** — see the LICENSE file for details.
+This project is licensed under the **MIT License** —

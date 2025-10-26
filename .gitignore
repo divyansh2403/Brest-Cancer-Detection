@@ -1,0 +1,12 @@
+# Python virtual environment
+venv/
+
+# Python cache files
+__pycache__/
+*.pyc
+
+# Saved models
+models/*.pkl
+
+# Jupyter Notebook checkpoints
+.ipynb_checkpoints/
